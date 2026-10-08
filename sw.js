@@ -1,5 +1,5 @@
 // Increment this version whenever publishing changed application files.
-const CACHE = 'cozy-morning-shell-v1';
+const CACHE = 'cozy-morning-shell-v2';
 const FILES = ['./', './index.html', './app.js', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
