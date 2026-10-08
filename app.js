@@ -1,115 +1,13 @@
-const routine = [
-  {
-    "name": "Wake Up & Come Online",
-    "tasks": [
-      {
-        "id": "out-of-bed",
-        "title": "Get out of bed",
-        "group": "Launch"
-      },
-      {
-        "id": "dog-out",
-        "title": "Let dog out",
-        "group": "Launch"
-      },
-      {
-        "id": "stretch",
-        "title": "PT / stretching",
-        "group": "Launch",
-        "quickDetail": "Shorten, but don’t skip entirely."
-      },
-      {
-        "id": "breakfast",
-        "title": "Eat something",
-        "group": "Fuel"
-      },
-      {
-        "id": "water",
-        "title": "Drink something",
-        "group": "Fuel",
-        "emergencyOptional": true
-      },
-      {
-        "id": "morning-medications",
-        "title": "Take morning medications",
-        "group": "Fuel"
-      }
-    ]
-  },
-  {
-    "name": "Get Ready",
-    "tasks": [
-      {
-        "id": "shower",
-        "title": "Shower",
-        "group": "Hygiene & Grooming"
-      },
-      {
-        "id": "teeth",
-        "title": "Brush teeth",
-        "group": "Hygiene & Grooming"
-      },
-      {
-        "id": "hair",
-        "title": "Do hair",
-        "group": "Hygiene & Grooming",
-        "quickTitle": "Do hair — ponytail"
-      },
-      {
-        "id": "dress",
-        "title": "Get dressed",
-        "group": "Hygiene & Grooming"
-      },
-      {
-        "id": "makeup",
-        "title": "Makeup",
-        "group": "Hygiene & Grooming",
-        "skipEmergency": true
-      }
-    ]
-  },
-  {
-    "name": "Start the Day",
-    "tasks": [
-      {
-        "id": "walk-dog",
-        "title": "Walk dog",
-        "group": "Dog",
-        "skipEmergency": true
-      },
-      {
-        "id": "spanish",
-        "title": "Spanish practice",
-        "group": "Brain",
-        "quickDetail": "Shorten rather than skip."
-      },
-      {
-        "id": "grab-lunch",
-        "title": "Grab lunch / anything needed for the day",
-        "group": "Launch"
-      },
-      {
-        "id": "gather-day-items",
-        "title": "Gather anything else that needs to leave with me",
-        "group": "Launch"
-      },
-      {
-        "id": "go",
-        "title": "Go!",
-        "group": "Launch"
-      }
-    ]
-  }
-];
+function escapeText(value){return String(value).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 const key='soft-morning-v1';let state={mode:'normal',done:[],started:new Date().toISOString()};let storageAvailable=true;
 try{const saved=JSON.parse(localStorage.getItem(key));if(saved && ['normal','emergency'].includes(saved.mode)&&Array.isArray(saved.done)){state={...state,...saved,done:saved.done.filter(id=>typeof id==='string')}}}catch(e){storageAvailable=false}
 const $=id=>document.getElementById(id);
 function save(){try{localStorage.setItem(key,JSON.stringify(state));storageAvailable=true}catch(e){storageAvailable=false}$('saved').textContent=storageAvailable?'Your progress is saved on this device.':'Progress is only saved while this page stays open.';$('status').textContent=storageAvailable?'':'Your browser could not save progress. Try a regular Safari tab with website storage enabled.'}
-function visibleTasks(section){return section.tasks.filter(t=>state.mode==='normal'||!t.skipEmergency)}
+function visibleTasks(section){return section.tasks.filter(t=>state.mode==='normal'?!t.skipStandard:!t.skipEmergency)}
 function minutes(task){return state.mode==='emergency'?(task.quick??task.minutes):task.minutes}
-function render(){const emergency=state.mode==='emergency';$('normal').setAttribute('aria-pressed',!emergency);$('emergency').setAttribute('aria-pressed',emergency);const tasks=routine.flatMap(visibleTasks);const completed=tasks.filter(t=>state.done.includes(t.id)).length;const percent=Math.round(completed/tasks.length*100);$('modeNote').textContent=emergency?'Makeup and the dog walk are skipped. Drink something is optional; PT and Spanish are shortened.':'Your full morning routine, one step at a time.';$('percent').textContent=percent+'%';$('bar').value=percent;$('count').textContent=`${completed} of ${tasks.length} tasks complete`;$('encouragement').textContent=completed===tasks.length?'You’re ready for the day.':completed===0?'One small step at a time.':'You’re finding your rhythm.';
- $('sections').replaceChildren(...routine.map((section,i)=>{const el=document.createElement('section');const shown=visibleTasks(section);el.innerHTML=`<div class="step">Block 0${i+1}</div><header><h2>${section.name.replace('&','&amp;')}</h2><span>${shown.filter(t=>state.done.includes(t.id)).length} / ${shown.length}</span></header><div class="tasks"></div>`;let previousGroup;shown.forEach(task=>{if(task.group!==previousGroup){const heading=document.createElement('h3');heading.className='group-heading';heading.textContent=task.group;el.querySelector('.tasks').append(heading);previousGroup=task.group}const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.checked=state.done.includes(task.id);check.setAttribute('aria-label',emergency&&task.quickTitle?task.quickTitle:task.title);check.addEventListener('change',()=>{state.done=check.checked?[...new Set([...state.done,task.id])]:state.done.filter(id=>id!==task.id);save();updateProgress()});const text=document.createElement('span');text.className='tasktext';text.innerHTML=`<span class="title">${emergency&&task.quickTitle?task.quickTitle:task.title}</span>${emergency&&task.emergencyOptional?'<span class="optional">Optional</span>':''}${emergency&&task.quickDetail?`<span class="details">${task.quickDetail}</span>`:''}`;const time=document.createElement('span');time.className='duration';if(Number.isFinite(minutes(task))){time.textContent=minutes(task)+' min';label.append(check,text,time)}else{label.append(check,text)};el.querySelector('.tasks').append(label)});return el}));}
-function updateProgress(){const tasks=routine.flatMap(visibleTasks);const n=tasks.filter(t=>state.done.includes(t.id)).length;const percent=Math.round(n/tasks.length*100);$('percent').textContent=percent+'%';$('bar').value=percent;$('count').textContent=`${n} of ${tasks.length} tasks complete`;$('encouragement').textContent=n===tasks.length?'You’re ready for the day.':n===0?'One small step at a time.':'You’re finding your rhythm.';document.querySelectorAll('section header span').forEach((el,i)=>{const t=visibleTasks(routine[i]);el.textContent=`${t.filter(t=>state.done.includes(t.id)).length} / ${t.length}`})}
+function render(){const emergency=state.mode==='emergency';$('normal').setAttribute('aria-pressed',!emergency);$('emergency').setAttribute('aria-pressed',emergency);const tasks=routine.flatMap(visibleTasks);const completed=tasks.filter(t=>state.done.includes(t.id)).length;const percent=tasks.length?Math.round(completed/tasks.length*100):0;$('modeNote').textContent=emergency?'Makeup and the dog walk are skipped. Drink something is optional; PT and Spanish are shortened.':'Your full morning routine, one step at a time.';$('percent').textContent=percent+'%';$('bar').value=percent;$('count').textContent=`${completed} of ${tasks.length} tasks complete`;$('encouragement').textContent=completed===tasks.length?'You’re ready for the day.':completed===0?'One small step at a time.':'You’re finding your rhythm.';
+ $('sections').replaceChildren(...routine.map((section,i)=>{const el=document.createElement('section');const shown=visibleTasks(section);el.innerHTML=`<div class="step">Block 0${i+1}</div><header><h2>${section.name.replace('&','&amp;')}</h2><span>${shown.filter(t=>state.done.includes(t.id)).length} / ${shown.length}</span></header><div class="tasks"></div>`;let previousGroup;shown.forEach(task=>{if(task.group!==previousGroup){const heading=document.createElement('h3');heading.className='group-heading';heading.textContent=task.group;el.querySelector('.tasks').append(heading);previousGroup=task.group}const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.checked=state.done.includes(task.id);check.setAttribute('aria-label',emergency&&task.quickTitle?task.quickTitle:task.title);check.addEventListener('change',()=>{state.done=check.checked?[...new Set([...state.done,task.id])]:state.done.filter(id=>id!==task.id);save();updateProgress()});const text=document.createElement('span');text.className='tasktext';text.innerHTML=`<span class="title">${escapeText(emergency&&task.quickTitle?task.quickTitle:task.title)}</span>${emergency&&task.emergencyOptional?'<span class="optional">Optional</span>':''}${(emergency&&task.quickDetail)||task.detail?`<span class="details">${escapeText((emergency&&task.quickDetail)||task.detail)}</span>`:''}`;const time=document.createElement('span');time.className='duration';if(Number.isFinite(minutes(task))){time.textContent=minutes(task)+' min';label.append(check,text,time)}else{label.append(check,text)};el.querySelector('.tasks').append(label)});return el}));}
+function updateProgress(){const tasks=routine.flatMap(visibleTasks);const n=tasks.filter(t=>state.done.includes(t.id)).length;const percent=tasks.length?Math.round(n/tasks.length*100):0;$('percent').textContent=percent+'%';$('bar').value=percent;$('count').textContent=`${n} of ${tasks.length} tasks complete`;$('encouragement').textContent=n===tasks.length?'You’re ready for the day.':n===0?'One small step at a time.':'You’re finding your rhythm.';document.querySelectorAll('section header span').forEach((el,i)=>{const t=visibleTasks(routine[i]);el.textContent=`${t.filter(t=>state.done.includes(t.id)).length} / ${t.length}`})}
 ['normal','emergency'].forEach(mode=>$(mode).addEventListener('click',()=>{state.mode=mode;save();render()}));$('reset').addEventListener('click',()=>$('confirm').showModal());$('cancel').addEventListener('click',()=>$('confirm').close());$('clear').addEventListener('click',()=>{state.done=[];state.started=new Date().toISOString();save();render();$('confirm').close();$('reset').focus();$('status').textContent='A fresh start. Your checkmarks have been cleared.'});$('date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});render();save();
 
 // Keep the original storage key and task IDs so routine updates retain progress.

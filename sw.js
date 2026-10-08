@@ -1,6 +1,7 @@
-// Increment this version whenever publishing changed application files.
-const CACHE = 'cozy-morning-shell-v2';
-const FILES = ['./', './index.html', './app.js', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+// Routine edits update this worker automatically through the imported file.
+importScripts('./routine.js');
+const CACHE = 'cozy-morning-shell-v3-' + ROUTINE_VERSION;
+const FILES = ['./', './index.html', './app.js', './routine.js', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
 });
