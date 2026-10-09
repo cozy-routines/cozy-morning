@@ -41,7 +41,7 @@ const routine = [
         "id": "dog-out",
         "group": "Ignition",
         "title": "Let the dog out",
-        "detail": "10-15 minutes. Get Smokey's harness on, throw on a cover-up or robe, and let him outside, Multi-task and start one or your next morning tasks.",
+        "detail": "10-15 minutes. Get Smokey's harness on, throw on a cover-up or robe, and let him outside, Multi-task and start one of your next morning tasks.",
         "quickTitle": "",
         "quickDetail": "10 - 15 minutes. Multi-task and start another morning task.",
         "skipStandard": false,
@@ -63,7 +63,7 @@ const routine = [
         "id": "breakfast",
         "group": "Fuel Up",
         "title": "Eat something for breakfast",
-        "detail": "10-20 minutes. Breakfast should ideally include a protein and complext carbs. If you're short on time, grab a make-ahead breakfast bite, If you have overnight oats or a shake already prepared, thank Yesterday Kim.",
+        "detail": "10-20 minutes. Breakfast should ideally include a protein and complex carbs. If you're short on time, grab a make-ahead breakfast bite, If you have overnight oats or a shake already prepared, thank Yesterday Kim.",
         "quickTitle": "Eat something",
         "quickDetail": "5 minutes. Grab a quick make-ahead breakfast or at least a protein bar.",
         "skipStandard": false,
@@ -84,7 +84,7 @@ const routine = [
       {
         "id": "morning-medications",
         "group": "Fuel Up",
-        "title": "Take your morning medications"
+        "title": "Take your morning medications",
         "detail": "",
         "quickTitle": "Take Meds",
         "quickDetail": "",
