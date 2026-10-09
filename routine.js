@@ -32,7 +32,7 @@ const routine = [
         "title": "Get out of bed",
         "detail": "0-5 minutes. Actually get up out of the bed. If you have the time, also make the bed to discourage yourself from getting back in.",
         "quickTitle": "Get up",
-        "quickDetail": "",
+        "quickDetail": "Actually get up out of the bed.",
         "skipStandard": false,
         "skipEmergency": false,
         "emergencyOptional": false
@@ -136,10 +136,10 @@ const routine = [
         "title": "Put on your makeup (optional)",
         "detail": "5 minutes. If you feel like it, put on some lipstick and mascara. If you have the time (and the interest), do your whole face (10-15 more minutes).",
         "quickTitle": "Makeup",
-        "quickDetail": "",
+        "quickDetail": "5 minutes if you feel like it. Put on lipstick and mascara.",
         "skipStandard": false,
-        "skipEmergency": true,
-        "emergencyOptional": false
+        "skipEmergency": false,
+        "emergencyOptional": true
       },
       {
         "id": "dress",
@@ -147,7 +147,7 @@ const routine = [
         "title": "Get dressed",
         "detail": "5-10 minutes. If you put some clothes out last night, thank Yesterday Kim",
         "quickTitle": "",
-        "quickDetail": "",
+        "quickDetail": "5-10 minutes.",
         "skipStandard": false,
         "skipEmergency": false,
         "emergencyOptional": false
@@ -163,7 +163,7 @@ const routine = [
         "title": "Walk the dog",
         "detail": "10-30 minutes. If you have the time, especially if the sun is up, take the dog for a walk.",
         "quickTitle": "",
-        "quickDetail": "",
+        "quickDetail": "10-15 minutes.",
         "skipStandard": false,
         "skipEmergency": false,
         "emergencyOptional": true
@@ -185,7 +185,7 @@ const routine = [
         "title": "Pack your lunch",
         "detail": "5-15 minutes. If you packed your lunch last night, thank Yesterday Kim. Otherwise put together a quick lunch. Be sure to include protein and complex carbs.",
         "quickTitle": "",
-        "quickDetail": "5 minutes. At least grab a protein bar. If you packed your lunch last night, thank Yesterday Kim.",
+        "quickDetail": "5 minutes. At least grab a protein bar.",
         "skipStandard": false,
         "skipEmergency": false,
         "emergencyOptional": false
